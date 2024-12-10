@@ -3,35 +3,78 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ツイート画像表示</title>
+    <title>動的にツイートを表示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        input {
+            padding: 8px;
+            width: 300px;
+            margin-right: 10px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #1da1f2;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0d8ddf;
+        }
+        .tweet-container {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
 
-    <h2>ツイートIDを入力して画像を表示</h2>
-    <input type="text" id="tweetID" placeholder="ツイートIDを入力">
-    <button onclick="fetchTweetImage()">画像を表示</button>
+    <h2>ツイート表示ツール</h2>
+    <p>表示したいツイートのURLやツイートIDを入力してください。</p>
 
-    <div id="tweet-image"></div>
+    <!-- 入力フォーム -->
+    <input type="text" id="tweetInput" placeholder="ツイートIDまたはURLを入力">
+    <button onclick="displayTweet()">ツイートを表示</button>
+
+    <!-- ツイートを表示するエリア -->
+    <div id="tweetContainer" class="tweet-container"></div>
+
+    <!-- Twitterウィジェットのスクリプト -->
+    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
     <script>
-        function fetchTweetImage() {
-            const tweetID = document.getElementById('tweetID').value.trim();
+        function displayTweet() {
+            const input = document.getElementById("tweetInput").value.trim();
+            const tweetContainer = document.getElementById("tweetContainer");
 
-            if (tweetID) {
-                fetch(`/getTweetImage.php?tweetID=${tweetID}`)
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.imageUrl) {
-                            document.getElementById('tweet-image').innerHTML = `<img src="${data.imageUrl}" alt="Tweet Image" />`;
-                        } else {
-                            document.getElementById('tweet-image').innerHTML = 'このツイートには画像が含まれていません。';
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error fetching tweet image:', error);
-                    });
+            // 入力が空の場合はエラー
+            if (!input) {
+                alert("ツイートIDまたはURLを入力してください。");
+                return;
+            }
+
+            // ツイートIDを抽出
+            let tweetID;
+            const urlMatch = input.match(/status\/(\d+)/); // URLからIDを抽出
+            if (urlMatch) {
+                tweetID = urlMatch[1];
             } else {
-                alert('ツイートIDを入力してください');
+                tweetID = input; // IDそのものが入力された場合
+            }
+
+            // 埋め込みツイートのHTMLを動的に生成
+            tweetContainer.innerHTML = `
+                <blockquote class="twitter-tweet">
+                    <a href="https://twitter.com/anyuser/status/${tweetID}"></a>
+                </blockquote>
+            `;
+
+            // Twitterウィジェットを再読み込み
+            if (window.twttr && twttr.widgets) {
+                twttr.widgets.load();
             }
         }
     </script>

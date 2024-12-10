@@ -3,56 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>動的にツイートを表示</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        input {
-            padding: 8px;
-            width: 300px;
-            margin-right: 10px;
-        }
-        button {
-            padding: 8px 15px;
-            background-color: #1da1f2;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: #0d8ddf;
-        }
-        .tweet-container {
-            margin-top: 20px;
-        }
-    </style>
+    <title>ツイート埋め込み</title>
 </head>
 <body>
-
-    <h2>ツイート表示ツール</h2>
-    <p>表示したいツイートのURLやツイートIDを入力してください。</p>
+    <h2>ツイート表示テスト</h2>
 
     <!-- 入力フォーム -->
-    <input type="text" id="tweetInput" placeholder="ツイートIDまたはURLを入力">
-    <button onclick="displayTweet()">ツイートを表示</button>
+    <input type="text" id="tweetInput" placeholder="ツイートURLまたはIDを入力">
+    <button onclick="displayTweet()">表示</button>
 
-    <!-- ツイートを表示するエリア -->
-    <div id="tweetContainer" class="tweet-container"></div>
+    <!-- ツイート表示エリア -->
+    <div id="tweetContainer"></div>
 
-    <!-- Twitterウィジェットのスクリプト -->
+    <!-- Twitter埋め込みスクリプト -->
     <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
     <script>
         function displayTweet() {
-            const input = document.getElementById("tweetInput").value.trim();
-            const tweetContainer = document.getElementById("tweetContainer");
+            const input = document.getElementById('tweetInput').value.trim();
+            const tweetContainer = document.getElementById('tweetContainer');
 
-            // 入力が空の場合はエラー
+            // 入力が空の場合エラー
             if (!input) {
-                alert("ツイートIDまたはURLを入力してください。");
+                alert('ツイートIDまたはURLを入力してください。');
                 return;
             }
 
@@ -62,10 +35,10 @@
             if (urlMatch) {
                 tweetID = urlMatch[1];
             } else {
-                tweetID = input; // IDそのものが入力された場合
+                tweetID = input; // 直接IDが入力された場合
             }
 
-            // 埋め込みツイートのHTMLを動的に生成
+            // コンテナをクリアして新しいツイートを追加
             tweetContainer.innerHTML = `
                 <blockquote class="twitter-tweet">
                     <a href="https://twitter.com/anyuser/status/${tweetID}"></a>
@@ -78,6 +51,5 @@
             }
         }
     </script>
-
 </body>
 </html>
